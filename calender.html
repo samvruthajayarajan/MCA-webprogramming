@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Calendar Generator</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            width: 40px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    YEAR: <input type="text" id="year_get"><br><br>
+    Month (1-12): <input type="text" id="month_get"><br><br>
+    <input type="button" id="submit" value="Display Calendar" onclick="generate()"><br><br>
+    <div id="content"></div>
+
+    <script>
+        function generate() {
+            var year = parseInt(document.getElementById("year_get").value);
+            var monthInput = parseInt(document.getElementById("month_get").value);
+
+            if (isNaN(year) || isNaN(monthInput) || monthInput < 1 || monthInput > 12) {
+                document.getElementById("content").innerHTML = "<p style='color:red;'>Please enter a valid year and month (1-12).</p>";
+                return;
+            }
+
+            var month = monthInput - 1;
+            var init_content = `<table border="1" id="calendar">
+                <tr>
+                    <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+                </tr>
+                <tr>`;
+
+            var date = new Date(year, month, 1);
+            var startingDay = date.getDay();
+
+            for (var i = 0; i < startingDay; i++) {
+                init_content += "<td></td>";
+            }
+
+            while (date.getMonth() === month) {
+                if (date.getDay() === 0 && date.getDate() !== 1) {
+                    init_content += "</tr><tr>";
+                }
+
+                init_content += "<td>" + date.getDate() + "</td>";
+                date.setDate(date.getDate() + 1);
+            }
+
+            var lastDay = new Date(year, month + 1, 0).getDay();
+            for (var i = lastDay; i < 6; i++) {
+                init_content += "<td></td>";
+            }
+
+            init_content += "</tr></table>";
+            document.getElementById("content").innerHTML = init_content;
+        }
+    </script>
+</body>
+</html>
